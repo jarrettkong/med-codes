@@ -32,7 +32,6 @@ app.use(express.static(path.join(__dirname, 'static')))
 
 io.on('connection', socket => {
     socket.on('newGame', () => {
-        // Emit new game
         const [code, description] = pairs[Math.floor(Math.random() * pairs.length)]
 
         const wrongDescriptions = []

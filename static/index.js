@@ -8,17 +8,31 @@ function displayQuiz(dataset) {
   }
 }
 
-function newQuiz(dataset) {
+function newQuiz(dataset, callback) {
   displayQuiz(dataset)
   Array.from(quizOptions).forEach(option => {
-    option.addEventListener('click', checkAnswer(dataset, dataset.options.indexOf(option.innerText)));
+    option.addEventListener('click', checkAnswer(dataset, dataset.options.indexOf(option.innerText), callback));
   });
 }
 
-function checkAnswer(dataset, index) {
+function checkAnswer(dataset, index, callback) {
   return function(e) {
-    index === dataset.answer ? alert('correct') : alert('wrong');
+    if (index === dataset.answer) {
+      alert('correct');
+      callback()
+    }
+   else {
+      alert('wrong');
+    }
   }
 }
 
-window.onload = newQuiz(testData);
+document.addEventListener('DOMContentLoaded', () => {
+  const socket = io()
+
+  socket.emit('newGame')
+
+  socket.on('game', game => {
+    newQuiz(game, () => socket.emit('newGame'))
+  })
+})
